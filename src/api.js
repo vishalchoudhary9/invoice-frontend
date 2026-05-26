@@ -1,44 +1,27 @@
-const API_BASE_URL = "https://invoice-backend-p7be.onrender.com";
-
-export const getToken = () => {
-  return localStorage.getItem("token");
-};
-
-export const getUser = () => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
-};
-
-export const setAuthData = (token, user) => {
-  localStorage.setItem("token", token);
-  localStorage.setItem("user", JSON.stringify(user));
-};
-
-export const clearAuthData = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-};
+const API_URL = import.meta.env.VITE_API_URL || "https://invoice-backend-p7be.onrender.com";
 
 export const apiRequest = async (endpoint, options = {}) => {
-  const token = getToken();
+  const token = localStorage.getItem("token");
 
-  const headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
-    headers,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(options.headers || {}),
+    },
   });
 
-  const data = await response.json();
+  const text = await res.text();
 
-  if (!response.ok) {
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Backend URL wrong or server returned HTML");
+  }
+
+  if (!res.ok) {
     throw new Error(data.message || "Something went wrong");
   }
 
