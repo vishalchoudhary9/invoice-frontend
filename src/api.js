@@ -1,5 +1,4 @@
-const API_URL =
-  import.meta.env.VITE_API_URL || "https://invoice-backend-p7be.onrender.com";
+const API_URL = "https://invoice-backend-p7be.onrender.com";
 
 const request = async (endpoint, options = {}) => {
   const token = localStorage.getItem("token");
