@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@media print {
+  body {
+    background: white;
+  }
+
+  @page {
+    size: A4;
+    margin: 8mm;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    display: none !important;
+  }
+
+  .invoice-copy {
+    page-break-after: always;
+  }
+
+  .invoice-copy:last-child {
+    page-break-after: auto;
+  }
+}
