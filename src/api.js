@@ -1,34 +1,13 @@
-const API_URL = "https://invoice-backend-p7be.onrender.com";
+const API_BASE_URL = "http://localhost:5000/api";
 
-const request = async (endpoint, options = {}) => {
-  const token = localStorage.getItem("token");
-
-  const res = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {}),
-    },
-  });
-
-  const text = await res.text();
-
-  let data = {};
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    throw new Error("Server returned HTML. Check VITE_API_URL.");
-  }
-
-  if (!res.ok) {
-    throw new Error(data.message || "Something went wrong");
-  }
-
-  return data;
+export const getToken = () => {
+  return localStorage.getItem("token");
 };
 
-export const apiRequest = request;
+export const getUser = () => {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
+};
 
 export const setAuthData = (token, user) => {
   localStorage.setItem("token", token);
@@ -40,42 +19,28 @@ export const clearAuthData = () => {
   localStorage.removeItem("user");
 };
 
-export const getUser = () => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
-};
+export const apiRequest = async (endpoint, options = {}) => {
+  const token = getToken();
 
-export const registerUser = (formData) => {
-  return request("/api/auth/register", {
-    method: "POST",
-    body: JSON.stringify(formData),
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    ...options,
+    headers,
   });
-};
 
-export const loginUser = (formData) => {
-  return request("/api/auth/login", {
-    method: "POST",
-    body: JSON.stringify(formData),
-  });
-};
+  const data = await response.json();
 
-export const createInvoice = (formData) => {
-  return request("/api/invoices", {
-    method: "POST",
-    body: JSON.stringify(formData),
-  });
-};
+  if (!response.ok) {
+    throw new Error(data.message || "Something went wrong");
+  }
 
-export const getInvoices = () => {
-  return request("/api/invoices");
-};
-
-export const getInvoiceById = (id) => {
-  return request(`/api/invoices/${id}`);
-};
-
-export const deleteInvoice = (id) => {
-  return request(`/api/invoices/${id}`, {
-    method: "DELETE",
-  });
+  return data;
 };
