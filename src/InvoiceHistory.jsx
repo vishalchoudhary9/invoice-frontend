@@ -134,7 +134,7 @@ function InvoiceHistory() {
 
   const InvoiceCopy = ({ invoice, copyType }) => {
     return (
-      <div className="invoice-copy mx-auto bg-white text-black border-2 border-black text-[11px] leading-tight max-w-[900px] print:max-w-none print:w-full print:break-after-page">
+      <div className="invoice-copy mx-auto bg-white text-black border-2 border-black text-[11px] leading-tight max-w-225 print:max-w-none print:w-full print:break-after-page">
         <div className="grid grid-cols-3 border-b border-black">
           <div></div>
 
@@ -148,7 +148,7 @@ function InvoiceHistory() {
         </div>
 
         <div className="grid grid-cols-2 border-b border-black">
-          <div className="border-r border-black p-3 flex gap-3 min-h-[115px]">
+          <div className="border-r border-black p-3 flex gap-3 min-h-28.75">
             <div className="w-20 h-20 border flex items-center justify-center shrink-0">
               {company?.logo ? (
                 <img
@@ -205,7 +205,7 @@ function InvoiceHistory() {
           </div>
         </div>
 
-        <div className="border-b border-black p-3 min-h-[95px]">
+        <div className="border-b border-black p-3 min-h-23.75">
           <b>Customer Details:</b>
           <p className="font-bold">{invoice.customerName}</p>
           <p>
@@ -385,7 +385,7 @@ function InvoiceHistory() {
         <p className="text-gray-500 print:hidden">No invoice history found.</p>
       ) : (
         <div className="overflow-x-auto print:hidden">
-          <table className="w-full border-collapse border min-w-[900px]">
+          <table className="w-full border-collapse border min-w-225">
             <thead>
               <tr className="bg-blue-700 text-white">
                 <th className="border p-2 text-left">Invoice No</th>
